@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains the simulation code, real data analysis and toy example for the HOSS method.
+This repository contains the simulation code, real data analysis and toy example for the HOSS method. 
 
 ## Structure
 
