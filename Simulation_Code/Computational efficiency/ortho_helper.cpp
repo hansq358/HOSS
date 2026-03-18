@@ -7,8 +7,6 @@ using namespace arma;
 
 // Helper to get residuals from OLS: y = X*beta + e
 arma::vec get_ols_residuals(const arma::mat& X, const arma::vec& y) {
-    // arma::solve computes (X'X)^-1 X'y efficiently via decomposition
-    // limited by memory if X is huge, but here X has few columns (2 to 5)
     arma::vec beta = arma::solve(X, y);
     return y - X * beta;
 }
@@ -26,10 +24,7 @@ arma::mat create_structured_orthogonal_terms_cpp(arma::mat main_effects) {
     X_centered.each_row() -= means;
 
     // 2. Quadratic Terms Orthogonalization
-    // We store quad terms to use them in interaction orthogonalization later
     arma::mat quad_terms_ortho(N, m);
-    
-    // Constant column for intercept
     arma::vec ones = arma::ones<vec>(N);
 
     for (int i = 0; i < m; ++i) {
@@ -57,8 +52,6 @@ arma::mat create_structured_orthogonal_terms_cpp(arma::mat main_effects) {
             arma::vec raw_interaction = main_effects.col(i) % main_effects.col(j);
             
             // Basis: [1, linear_i, linear_j, quad_i, quad_j]
-            // Note: quad terms are already orthogonal to linear terms, but 
-            // including them in the regression ensures the interaction is orthogonal to ALL of them.
             arma::mat basis(N, 5);
             basis.col(0) = ones;
             basis.col(1) = X_centered.col(i);
